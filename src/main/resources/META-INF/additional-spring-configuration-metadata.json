@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "eureka.instance.lease-renewal-interval-in-seconds",
+      "type": "java.lang.String",
+      "description": "Description for eureka.instance.lease-renewal-interval-in-seconds."
+    },
+    {
+      "name": "eureka.server.enable-self-preservation",
+      "type": "java.lang.String",
+      "description": "Description for eureka.server.enable-self-preservation."
+    }
+  ] }

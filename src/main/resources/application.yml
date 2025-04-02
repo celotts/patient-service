@@ -1,0 +1,108 @@
+spring:
+  application:
+    name: patient-service
+
+  profiles:
+    active: ${PROFILE:dev}
+  config:
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://${CONFIG_USER}:${CONFIG_USER_PASSWORD}@localhost:7777}
+
+  cloud:
+    config:
+      enabled: ${CLOUD_CONFIG_ENABLED:true}
+      fail-fast:  ${CLOUD_CONFIG_IMPORT_CHECK:false}
+
+  datasource:
+    hikari:
+      maximum-pool-size:  ${db.maximum-pool-size:10}
+      connection-timeout: ${db.connection-timeout:30000}
+    url: ${db.url:jdbc:postgresql://localhost:5433/patient_service}
+    username: ${db.username:patient}
+    password: ${db.password:${POSTGRES_PASSWORD}}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
+
+  sql:
+    init:
+      mode: ${SPRING_SQL_INIT_MODE:never}
+
+  jpa:
+    open-in-view: ${SPRING_JPA_OPEN_IN_VIEW:false}
+    hibernate:
+      ddl-auto: ${SPRING_HIBERNATE_DLL_AUTO:update}
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: ${SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_BATCH_SIZE:20}
+        order_updates: ${SPRING_JPA_PROPERTIES_HIBERNATE_ORDER_UPDATES:true}
+        order_inserts: ${SPRING_JPA_PROPERTIES_HIBERNATE_ORDER_INSERTS:true}
+        format_sql: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL:true}
+
+server:
+  port: ${SERVER_PORT:8081}
+  shutdown: ${SPRING_SERVER_SHUTDOWN:graceful}
+  servlet:
+    context-path: /api
+
+eureka:
+  server:
+    enable-self-preservation: ${SPRING_EUREKA_SERVER_ENABLE_SELF_PRESERVATION:false}
+
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:${URI_DEFAULT_ZONE}}
+    registerWithEureka: ${SPRING_EUREKA_CLIENT_REGISTER_WITH_EUREKA:true}
+    fetchRegistry: ${SPRING_EUREKA_CLIENT_FETCH_REGISTRY:true}
+
+  instance:
+    prefer-ip-address: true
+    instance-id: "${spring.application.name}:${random.value}:${server.port}"
+    lease-renewal-interval-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_RENEWAL_INTERVAL_IN_SECONDS:5}
+    lease-expiration-duration-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_EXPIRATION_DURATION_IN_SECONDS:10}
+    metadata-map:
+      management.port: ${SPRING_EUREKA_INSTANCE_METADATA_MAP_MANAGEMENT_PORT:8081}
+
+management:
+  server:
+    port: ${SPRING_MANAGEMENT_SERVER_PORT:8081}
+  endpoints:
+    web:
+      exposure:
+        include: ${SPRING_MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE:*}
+  endpoint:
+    health:
+      show-details: ${SPRING_MANAGEMENT_ENDPOINTS_HEALTH_SHOW_DETAILS:always}
+  metrics:
+    enable:
+      all: ${MANAGEMENT_METRICS_ENABLED_ALL:false}
+
+springdoc:
+  api-docs:
+    enabled: ${SPRING_SPRINGDOC_API_DOCS_ENABLED:true}
+  swagger-ui:
+    enabled: ${SPRING_SPRINGDOC_SWAGGER_UI_ENABLED:true}
+    path: ${SPRING_SPRINGDOC_SWAGGER_UI_PATH:/swagger-ui.html}
+
+logging:
+  level:
+    org.springframework.boot.web.embedded.tomcat.TomcatWebServer: INFO
+    org.springframework.context.annotation: ERROR
+    org.springframework.beans.factory.support: ERROR
+    'org.springframework.context.annotation.ConfigurationClassPostProcessor$BeanPostProcessorChecker': ERROR
+    'org.springframework.beans.factory.support.DefaultListableBeanFactory$BeanPostProcessorChecker': ERROR
+    org.springframework.cloud.config: DEBUG
+    org.springframework.cloud.config.client.ConfigServerConfigDataLoader: WARN
+    com.netflix.discovery: WARN
+    com.netflix.eureka: WARN
+    org.springframework.cloud.netflix: WARN
+    org.springframework.cloud.loadbalancer: WARN
+    org.springframework.cloud.client: WARN
+    org.hibernate.orm.deprecation: ERROR
+    org.springframework.orm.jpa: ERROR
+    org.hibernate.orm.jdbc.batch: OFF
+    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: OFF
+    org.springframework.dao: ERROR
+    org.springframework.transaction: ERROR
+    org.hibernate.engine.jdbc: OFF
+    org.hibernate.engine.transaction: ERROR
+    root: WARN

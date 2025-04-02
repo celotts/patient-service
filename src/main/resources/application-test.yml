@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/appointments  # Cambia `app-appointments` por `localhost`
+    username: appointments
+    password: 0513Appointments
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # En pruebas, crea y borra las tablas automáticamente
+    #properties:
+    #  hibernate:
+    #    dialect: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: never  # Evita cargar SQL en pruebas
+
+server:
+  port: 0  # Asigna un puerto aleatorio para evitar conflictos
+
+logging:
+  level:
+    org.springframework: WARN
+    com.ms_cels: DEBUG
