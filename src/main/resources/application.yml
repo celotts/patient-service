@@ -63,11 +63,12 @@ eureka:
 
 management:
   server:
+    base-path: /api/actuator
     port: ${SPRING_MANAGEMENT_SERVER_PORT:8081}
   endpoints:
     web:
       exposure:
-        include: ${SPRING_MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE:*}
+        include: health,info
   endpoint:
     health:
       show-details: ${SPRING_MANAGEMENT_ENDPOINTS_HEALTH_SHOW_DETAILS:always}

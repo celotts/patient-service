@@ -16,4 +16,4 @@ COPY target/*.jar app.jar
 EXPOSE 8081
 
 # Script para esperar a que Eureka esté activo y luego iniciar con opciones para deshabilitar métricas
-ENTRYPOINT ["/bin/sh", "-c", "/app/wait-for-it.sh registry-server:8761 --timeout=30 --strict -- java -Dio.micrometer.system-metrics.enabled=false -Dmanagement.metrics.enable.system=false -Dmanagement.metrics.enable.process=false -Dspring.autoconfigure.exclude=org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration,org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleMetricsExportAutoConfiguration -jar app.jar"]
+ENTRYPOINT ["/bin/sh", "-c", "/app/wait-for-it.sh registry-server:8762 --timeout=30 --strict -- java -Dio.micrometer.system-metrics.enabled=false -Dmanagement.metrics.enable.system=false -Dmanagement.metrics.enable.process=false -Dspring.autoconfigure.exclude=org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration,org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleMetricsExportAutoConfiguration -jar app.jar"]
