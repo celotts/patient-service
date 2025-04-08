@@ -16,7 +16,7 @@ spring:
     hikari:
       maximum-pool-size:  ${db.maximum-pool-size:10}
       connection-timeout: ${db.connection-timeout:30000}
-    url: ${db.url:jdbc:postgresql://localhost:5432/patient_service}
+    url: ${db.url:jdbc:postgresql://localhost:5433/patient_service}
     username: ${db.username:patient}
     password: ${db.password:${POSTGRES_PASSWORD}}
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
