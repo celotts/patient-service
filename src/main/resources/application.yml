@@ -56,7 +56,7 @@ eureka:
 
   instance:
     prefer-ip-address: true
-    instance-id: "${spring.application.name}:${random.value}:${server.port}"
+    instance-id: ${spring.application.name}:${random.value}:${server.port:8081}
     lease-renewal-interval-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_RENEWAL_INTERVAL_IN_SECONDS:5}
     lease-expiration-duration-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_EXPIRATION_DURATION_IN_SECONDS:10}
     metadata-map:
