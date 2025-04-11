@@ -5,7 +5,7 @@ spring:
   profiles:
     active: ${PROFILE:dev}
   config:
-    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://${CONFIG_USER}:${CONFIG_USER_PASSWORD}@localhost:7777}
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://${CONFIG_USER}:${CONFIG_USER_PASSWORD}@patient-config-service:7777}
 
   cloud:
     config:
@@ -31,6 +31,7 @@ spring:
       ddl-auto: ${SPRING_HIBERNATE_DLL_AUTO:update}
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           batch_size: ${SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_BATCH_SIZE:20}
         order_updates: ${SPRING_JPA_PROPERTIES_HIBERNATE_ORDER_UPDATES:true}
@@ -55,7 +56,7 @@ eureka:
 
   instance:
     prefer-ip-address: true
-    instance-id: "${spring.application.name}:${random.value}:${server.port}"
+    instance-id: ${spring.application.name}:${random.value}:${server.port:8081}
     lease-renewal-interval-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_RENEWAL_INTERVAL_IN_SECONDS:5}
     lease-expiration-duration-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_EXPIRATION_DURATION_IN_SECONDS:10}
     metadata-map:

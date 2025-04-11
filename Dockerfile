@@ -1,19 +1,22 @@
 FROM openjdk:17-jdk-slim
 
+# Instala bash y curl en una sola capa limpia
+RUN apt-get update \
+ && apt-get install -y bash curl \
+ && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Instalar herramientas necesarias
-RUN apt update && apt install -y curl
+# 🔁 Copia los scripts primero
+COPY wait-for-it.sh wait-for-it.sh
+COPY entrypoint.sh entrypoint.sh
 
-# Copiar wait-for-it script
-COPY wait-for-it.sh /app/wait-for-it.sh
-RUN chmod +x /app/wait-for-it.sh
+# ✅ Asegura permisos de ejecución después de copiarlos
+RUN chmod +x wait-for-it.sh entrypoint.sh
 
-# Copiar el JAR
+# 📦 Copia el .jar generado por Maven
 COPY target/*.jar app.jar
 
-# Puerto
 EXPOSE 8081
 
-# Script para esperar a que Eureka esté activo y luego iniciar con opciones para deshabilitar métricas
-ENTRYPOINT ["/bin/sh", "-c", "/app/wait-for-it.sh registry-server:8762 --timeout=30 --strict -- java -Dio.micrometer.system-metrics.enabled=false -Dmanagement.metrics.enable.system=false -Dmanagement.metrics.enable.process=false -Dspring.autoconfigure.exclude=org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration,org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleMetricsExportAutoConfiguration -jar app.jar"]
+# 🔕 No pongas ENTRYPOINT aquí si lo defines en docker-compose
