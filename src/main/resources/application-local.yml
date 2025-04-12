@@ -2,8 +2,12 @@ server:
   port: 8082
 
 spring:
+  application:
+    name: patient-service
+  config:
+    import: optional:configserver:http://${CONFIG_USER}:${CONFIG_USER_PASSWORD}@localhost:7777
   datasource:
-    url: jdbc:postgresql://localhost:5433/patient_service
+    url: jdbc:postgresql://localhost:5433/patient
     username: patient
     password: Patient0513
     driver-class-name: org.postgresql.Driver

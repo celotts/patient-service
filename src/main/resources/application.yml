@@ -3,20 +3,21 @@ spring:
     name: patient-service
 
   profiles:
-    active: ${PROFILE:dev}
+    active: ${PROFILE:local}
+
   config:
     import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://${CONFIG_USER}:${CONFIG_USER_PASSWORD}@patient-config-service:7777}
 
   cloud:
     config:
       enabled: ${CLOUD_CONFIG_ENABLED:true}
-      fail-fast:  ${CLOUD_CONFIG_IMPORT_CHECK:false}
+      fail-fast: ${CLOUD_CONFIG_IMPORT_CHECK:false}
 
   datasource:
     hikari:
-      maximum-pool-size:  ${db.maximum-pool-size:10}
+      maximum-pool-size: ${db.maximum-pool-size:10}
       connection-timeout: ${db.connection-timeout:30000}
-    url: ${db.url:jdbc:postgresql://localhost:5433/patient_service}
+    url: jdbc:postgresql://patient-db:5432/patient
     username: ${db.username:patient}
     password: ${db.password:${POSTGRES_PASSWORD}}
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
@@ -45,27 +46,30 @@ server:
     context-path: /api
 
 eureka:
-  server:
-    enable-self-preservation: ${SPRING_EUREKA_SERVER_ENABLE_SELF_PRESERVATION:false}
+  instance:
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_RENEWAL_INTERVAL_IN_SECONDS:10}
+    lease-expiration-duration-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_EXPIRATION_DURATION_IN_SECONDS:60}
+    metadata-map:
+      management.port: ${SPRING_MANAGEMENT_SERVER_PORT:8081}
+      management.context-path: /api/actuator
 
   client:
+    register-with-eureka: ${SPRING_EUREKA_CLIENT_REGISTER_WITH_EUREKA:true}
+    fetch-registry: ${SPRING_EUREKA_CLIENT_FETCH_REGISTRY:true}
     service-url:
-      defaultZone: ${EUREKA_SERVER_URL:${URI_DEFAULT_ZONE}}
-    registerWithEureka: ${SPRING_EUREKA_CLIENT_REGISTER_WITH_EUREKA:true}
-    fetchRegistry: ${SPRING_EUREKA_CLIENT_FETCH_REGISTRY:true}
+      defaultZone: ${EUREKA_SERVER_URL:http://registry-service:8761/eureka/}
 
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}:${random.value}:${server.port:8081}
-    lease-renewal-interval-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_RENEWAL_INTERVAL_IN_SECONDS:5}
-    lease-expiration-duration-in-seconds: ${SPRING_EUREKA_INSTANCE_LEASE_EXPIRATION_DURATION_IN_SECONDS:10}
-    metadata-map:
-      management.port: ${SPRING_EUREKA_INSTANCE_METADATA_MAP_MANAGEMENT_PORT:8081}
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 15000
+    renewal-percent-threshold: 0.5
 
 management:
   server:
-    base-path: /api/actuator
     port: ${SPRING_MANAGEMENT_SERVER_PORT:8081}
+    base-path: /api/actuator
   endpoints:
     web:
       exposure:
@@ -84,13 +88,15 @@ springdoc:
     enabled: ${SPRING_SPRINGDOC_SWAGGER_UI_ENABLED:true}
     path: ${SPRING_SPRINGDOC_SWAGGER_UI_PATH:/swagger-ui.html}
 
+system:
+  metrics:
+    enabled: ${SYSTEM_METRICS_ENABLED:false}
+
 logging:
   level:
     org.springframework.boot.web.embedded.tomcat.TomcatWebServer: INFO
     org.springframework.context.annotation: ERROR
     org.springframework.beans.factory.support: ERROR
-    'org.springframework.context.annotation.ConfigurationClassPostProcessor$BeanPostProcessorChecker': ERROR
-    'org.springframework.beans.factory.support.DefaultListableBeanFactory$BeanPostProcessorChecker': ERROR
     org.springframework.cloud.config: DEBUG
     org.springframework.cloud.config.client.ConfigServerConfigDataLoader: WARN
     com.netflix.discovery: WARN

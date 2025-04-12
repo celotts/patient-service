@@ -11,10 +11,13 @@ function wait_for_service() {
     echo "✅ $name está disponible."
 }
 
-# === Espera por dependencias ===
+# === Espera por dependencias externas ===
 wait_for_service "registry-service" "registry-service:8761" 60
-wait_for_service "config-service" "config-service:7777" 60
-wait_for_service "patient-service" "patient-service:8081" 120
+# Puedes descomentar si el config-service es una dependencia obligatoria
+# wait_for_service "config-service" "config-service:7777" 60
+
+# ❌ Elimina esta línea que espera a sí mismo:
+# wait_for_service "patient-service" "patient-service:8081" 120
 
 # === Lanzar app ===
 echo "🚀 Iniciando app.jar..."
